@@ -21,3 +21,12 @@ this program goes through your youtube watch history and sorts channels based ho
 ![fifth image](https://github.com/Gholamrezadar/favourite-youtube-channels/blob/main/images/fifth%20step.jpg?raw=true)
 
 * Select a delivery method and click on "Create export"
+
+* After you download your data, extract the compressed file and find watch-history.json and place it beside .py files
+
+
+-- "most watched channles all time.py"
+
+-- "watch-history.json"
+
+* open .py files, change default options if needed and run them.
