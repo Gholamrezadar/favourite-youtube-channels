@@ -3,8 +3,8 @@ import re
 import time
 
 # parameters
-N = 27199  # how many of the latest videos to check
-M = 3  # top M videos
+N = 99999  # how many of the latest videos to check
+M = 10  # top M channels per years
 
 with open("watch-history.json", 'r', encoding="utf8") as f:
     # measuring time
@@ -15,6 +15,7 @@ with open("watch-history.json", 'r', encoding="utf8") as f:
 
     # how many videos have you watched
     print(len(data), " videos watched")
+    N = min(N,len(data))
 
     # measuring time after load
     b = time.time_ns()
@@ -42,8 +43,16 @@ with open("watch-history.json", 'r', encoding="utf8") as f:
             if "subtitles" not in video:
                 continue
 
+            # handle last year where the year doesnt change anymore
+            if last_checked_video_number>=N-1:
+                # how many videos you have watched in that year
+                print(current_year+" -", "you watched", n, "videos in", current_year)
+
             # ignore videos from other years
             if not video["time"].startswith(current_year):
+                # how many videos you have watched in that year
+                print(current_year+" -", "you watched", n, "videos in", current_year)
+
                 # optimization : break insted of continue : stops the loop after the year changes
                 current_year = video["time"][0:4]
                 break
@@ -58,9 +67,6 @@ with open("watch-history.json", 'r', encoding="utf8") as f:
         # sort channels by views
         sorted_channels = {k: v for k, v in sorted(
             channels.items(), key=lambda item: item[1], reverse=True)}
-
-        # how many videos you have watched in that year
-        print(current_year+" -", "you watched", n, "videos in", current_year)
 
         # measuring time
         temp_time = time.time_ns()

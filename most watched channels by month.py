@@ -4,8 +4,8 @@ import time
 import calendar
 
 # parameters
-N = 27199  # how many of the latest videos to check
-M = 6  # top M videos
+N = 99999  # how many of the latest videos to check
+M = 10  # top M Channels per month
 
 with open("watch-history.json", 'r', encoding="utf8") as f:
     # measuring load time
@@ -16,6 +16,7 @@ with open("watch-history.json", 'r', encoding="utf8") as f:
 
     # how many videos have you watched
     print(len(data), "total videos watched")
+    N = min(N,len(data))
 
     # printing the time it took to load
     b = time.time_ns()
@@ -50,9 +51,19 @@ with open("watch-history.json", 'r', encoding="utf8") as f:
             # for deleted videos and other exceptions
             if "subtitles" not in video:
                 continue
+            # handle last year where the year doesnt change anymore
+            if last_checked_video_number>=N-1:
+
+                # how many videos you have watched in that month
+                print(calendar.month_name[int(current_month)], current_year+" :", "you watched",
+                    n, "videos in", calendar.month_name[int(current_month)], current_year)
 
             # ignore videos from other years
             if not video["time"].startswith(current_year+"-"+current_month):
+                # how many videos you have watched in that month
+                print(calendar.month_name[int(current_month)], current_year+" :", "you watched",
+                    n, "videos in", calendar.month_name[int(current_month)], current_year)
+                    
                 # optimization : 
                 # break insted of continue, stops the loop after the year changes
                 current_year = video["time"][0:4]
@@ -70,9 +81,6 @@ with open("watch-history.json", 'r', encoding="utf8") as f:
         sorted_channels = {k: v for k, v in sorted(
             channels.items(), key=lambda item: item[1], reverse=True)}
 
-        # how many videos you have watched in that month
-        print(calendar.month_name[int(current_month)], current_year+" :", "you watched",
-              n, "videos in", calendar.month_name[int(current_month)], current_year)
 
         # measuring sorting time
         temp_time = time.time_ns()
