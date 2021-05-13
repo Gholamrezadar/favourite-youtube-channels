@@ -4,7 +4,7 @@ import time
 
 # parameters
 N = 27199  # how many of the latest videos to check
-M = 20  # top M videos
+M = 3  # top M videos
 
 with open("watch-history.json", 'r', encoding="utf8") as f:
     # measuring time
@@ -23,14 +23,11 @@ with open("watch-history.json", 'r', encoding="utf8") as f:
     print()
 
     # main process
-
-    # find "first year" and "last year" from data ex: 2021-2013
-    first_year = int(data[-1]["time"][0:4])
-    last_year = int(data[0]["time"][0:4])
-
     last_checked_video_number = 0
+    # last checked year, init to latest videos year
+    current_year = data[0]["time"][0:4]
     # optimizations improved the performance from 40 ms/year -> 15 ms/year avg
-    for year in range(last_year, first_year-1, -1):
+    while(last_checked_video_number < N):
         channels = {}
 
         n = 0
@@ -38,17 +35,18 @@ with open("watch-history.json", 'r', encoding="utf8") as f:
         for video in data[last_checked_video_number:N]:
             last_checked_video_number += 1
 
+            # count videos in that year
+            n += 1
+
             # for deleted videos and other exceptions
             if "subtitles" not in video:
                 continue
 
             # ignore videos from other years
-            if not video["time"].startswith(str(year)):
+            if not video["time"].startswith(current_year):
                 # optimization : break insted of continue : stops the loop after the year changes
+                current_year = video["time"][0:4]
                 break
-
-            # count videos in that year
-            n += 1
 
             channel_name = video["subtitles"][0]["name"]
 
@@ -62,7 +60,7 @@ with open("watch-history.json", 'r', encoding="utf8") as f:
             channels.items(), key=lambda item: item[1], reverse=True)}
 
         # how many videos you have watched in that year
-        print(str(year)+" -", "you watched", n, "videos in", year)
+        print(current_year+" -", "you watched", n, "videos in", current_year)
 
         # measuring time
         temp_time = time.time_ns()
