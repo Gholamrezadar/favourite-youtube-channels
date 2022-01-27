@@ -1,5 +1,5 @@
 # favourite-youtube-channels
-this program goes through your youtube watch history and sorts channels based how many of their videos you have watched!
+this program goes through your youtube watch history and sorts channels based on how many of their videos you have watched!
 
 ### follow these steps : 
 * Go to this url https://takeout.google.com/settings/takeout
